@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/SHugo.iml" filepath="$PROJECT_DIR$/SHugo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/shugo-annotation/shugo-annotation.iml" filepath="$PROJECT_DIR$/shugo-annotation/shugo-annotation.iml" />
+      <module fileurl="file://$PROJECT_DIR$/shugo-aspect/shugo-aspect.iml" filepath="$PROJECT_DIR$/shugo-aspect/shugo-aspect.iml" />
+      <module fileurl="file://$PROJECT_DIR$/shugo-plugin/shugo-plugin.iml" filepath="$PROJECT_DIR$/shugo-plugin/shugo-plugin.iml" />
+    </modules>
+  </component>
+</project>
