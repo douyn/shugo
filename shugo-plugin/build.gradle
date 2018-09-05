@@ -7,16 +7,39 @@ dependencies {
 
     implementation 'com.android.tools.build:gradle:3.1.2'
     //aspectj需要到的类
-    implementation 'org.aspectj:aspectjtools:1.8.5'
+    compile 'org.aspectj:aspectjtools:1.8.6'
+    compile 'org.aspectj:aspectjrt:1.8.6'
 }
 
-group='com.dou.shugo'
-version='1.0.0'
+group=rootProject.ext.JCenter.group
+version=rootProject.ext.JCenter.version
 
+/*
 uploadArchives{
     repositories{
         mavenDeployer{
             repository(url:uri("../repo"))
         }
+    }
+}*/
+
+apply from : '../bintray.gradle'
+
+//配置上传Bintray相关信息
+bintray {
+    user = "sparky"
+    key = "e662cf6d53d0fe888ecff3720810d692e19344a9"
+
+    configurations = ['archives']
+    pkg {
+        repo = 'shugo' // 上传到中央仓库的名称
+        name = 'shugo-plugin' // 上传到jcenter 的项目名称
+        desc = 'shugo plugin' // 项目描述
+//        websiteUrl = siteUrl
+//        issueTrackerUrl = issueUrl
+//        vcsUrl = gitUrl
+        labels = ['gradle', 'plugin']
+        licenses = ['Apache-2.0']
+        publish = true
     }
 }

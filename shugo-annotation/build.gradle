@@ -1,6 +1,5 @@
 apply plugin: 'java-library'
-apply plugin: 'com.github.dcendents.android-maven'
-group='com.github.douyn'
+apply plugin: 'maven'
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
@@ -8,3 +7,27 @@ dependencies {
 
 sourceCompatibility = "1.7"
 targetCompatibility = "1.7"
+
+apply from : '../bintray.gradle'
+
+group=rootProject.ext.JCenter.group
+version=rootProject.ext.JCenter.version
+
+//配置上传Bintray相关信息
+bintray {
+    user = "sparky"
+    key = "e662cf6d53d0fe888ecff3720810d692e19344a9"
+
+    configurations = ['archives']
+    pkg {
+        repo = 'shugo' // 上传到中央仓库的名称
+        name = 'shugo-annotation' // 上传到jcenter 的项目名称
+        desc = 'annotation' // 项目描述
+//        websiteUrl = siteUrl
+//        issueTrackerUrl = issueUrl
+//        vcsUrl = gitUrl
+        labels = ['gradle', 'annotation']
+        licenses = ['Apache-2.0']
+        publish = true
+    }
+}

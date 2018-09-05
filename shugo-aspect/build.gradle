@@ -1,16 +1,16 @@
+import org.aspectj.bridge.IMessage
+import org.aspectj.bridge.MessageHandler
+import org.aspectj.tools.ajc.Main
+
 apply plugin: 'com.android.library'
-apply plugin: 'com.shugo.plugin'
 apply plugin: 'com.github.dcendents.android-maven'
 
-group='com.github.douyn'
-
 buildscript{
-
-    repositories{
+    repositories {
         mavenCentral()
     }
 
-    dependencies {
+    dependencies{
         classpath 'org.aspectj:aspectjtools:1.8.9'
         classpath 'org.aspectj:aspectjweaver:1.8.9'
     }
@@ -24,9 +24,6 @@ android {
         targetSdkVersion rootProject.ext.android.targetSdkVersion
         versionCode 1
         versionName "1.0"
-
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
     }
 
     buildTypes {
@@ -38,13 +35,78 @@ android {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-
-    implementation 'com.android.support:appcompat-v7:26.1.0'
     testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.2'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 
     implementation 'org.aspectj:aspectjrt:1.8.9'
     implementation project(":shugo-annotation")
+}
+
+final def log = project.logger
+final def variants = project.android.libraryVariants
+
+
+variants.all { variant ->
+
+    // 如果是远程依赖，导出的是release包，在这里会被阻塞，需要注释掉
+    /*if (!variant.buildType.isDebuggable()) {
+        log.debug("Skipping non-debuggable build type '${variant.buildType.name}'.")
+        return;
+    }*/
+
+    JavaCompile javaCompile = variant.javaCompile
+    javaCompile.doLast {
+        String[] args = ["-showWeaveInfo",
+                         "-1.8",
+                         "-inpath", javaCompile.destinationDir.toString(),
+                         "-aspectpath", javaCompile.classpath.asPath,
+                         "-d", javaCompile.destinationDir.toString(),
+                         "-classpath", javaCompile.classpath.asPath,
+                         "-bootclasspath", android.bootClasspath.join(File.pathSeparator)]
+        log.debug "ajc args: " + Arrays.toString(args)
+
+        MessageHandler handler = new MessageHandler(true);
+        new Main().run(args, handler);
+        for (IMessage message : handler.getMessages(null, true)) {
+            switch (message.getKind()) {
+                case IMessage.ABORT:
+                case IMessage.ERROR:
+                case IMessage.FAIL:
+                    log.error message.message, message.thrown
+                    break;
+                case IMessage.WARNING:
+                    log.warn message.message, message.thrown
+                    break;
+                case IMessage.INFO:
+                    log.info message.message, message.thrown
+                    break;
+                case IMessage.DEBUG:
+                    log.debug message.message, message.thrown
+                    break;
+            }
+        }
+    }
+}
+
+apply from : '../bintray.gradle'
+
+group=rootProject.ext.JCenter.group
+version=rootProject.ext.JCenter.version
+
+//配置上传Bintray相关信息
+bintray {
+    user = "sparky"
+    key = "e662cf6d53d0fe888ecff3720810d692e19344a9"
+
+    configurations = ['archives']
+    pkg {
+        repo = 'shugo' // 上传到中央仓库的名称
+        name = 'shugo-aspect' // 上传到jcenter 的项目名称
+        desc = 'aspectj' // 项目描述
+//        websiteUrl = siteUrl
+//        issueTrackerUrl = issueUrl
+//        vcsUrl = gitUrl
+        labels = ['gradle', 'aspectj']
+        licenses = ['Apache-2.0']
+        publish = true
+    }
 }

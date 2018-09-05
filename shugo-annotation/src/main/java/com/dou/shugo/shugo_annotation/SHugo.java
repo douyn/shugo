@@ -11,6 +11,6 @@ import java.lang.annotation.Target;
  * Decription:
  */
 @Target(ElementType.METHOD)
-@Retention(RetentionPolicy.RUNTIME)
+@Retention(RetentionPolicy.CLASS)
 public @interface SHugo {
 }

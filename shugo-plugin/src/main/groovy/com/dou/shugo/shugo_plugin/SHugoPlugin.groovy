@@ -25,14 +25,36 @@ class SHugoPlugin implements Plugin<Project> {
             variants = project.android.applicationVariants
         } else if (hasLib) {
             variants = project.android.libraryVariants
+        } else {
+            throw new IllegalStateException("should be application or lib");
+        }
+
+        project.repositories {
+            google()
+            jcenter()
+            mavenCentral()
+            maven {
+                url 'https://dl.bintray.com/sparky/shugo'
+            }
+        }
+
+        project.dependencies {
+            implementation 'com.dou.shugo:shugo-annotation:1.0.33'
+            implementation 'org.aspectj:aspectjrt:1.8.6'
+            implementation 'com.dou.shugo:shugo-aspect:1.0.33'
         }
 
         final def log = project.logger
+
+        project.extensions.create("hugo", HugoExtension)
 
         variants.all { variant ->
             if (!variant.buildType.isDebuggable()) {
                 log.debug("Skipping non-debuggable build type '${variant.buildType.name}'.")
                 return;
+            } else if (!project.hugo.enable) {
+                log.debug("Hugo is not enable.")
+                return
             }
 
             JavaCompile javaCompile = variant.javaCompile

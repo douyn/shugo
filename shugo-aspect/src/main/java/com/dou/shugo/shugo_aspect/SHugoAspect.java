@@ -15,7 +15,9 @@ import org.aspectj.lang.reflect.MethodSignature;
 public class SHugoAspect {
 
     @Pointcut("execution(@com.dou.shugo.shugo_annotation.SHugo * *(..))")
-    public void pointcut(){}
+    public void pointcut(){
+        System.out.println("pointcut !!!");
+    }
 
     @Around("pointcut()")
     public void shugo(ProceedingJoinPoint point) throws Throwable{
