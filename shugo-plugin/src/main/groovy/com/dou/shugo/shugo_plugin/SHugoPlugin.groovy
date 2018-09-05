@@ -46,7 +46,15 @@ class SHugoPlugin implements Plugin<Project> {
 
         final def log = project.logger
 
+        // 添加普通的属性
         project.extensions.create("hugo", HugoExtension)
+
+//        // 添加list 属性
+//        def platforms = project.container(PlatformExtension)
+//        project.extensions.platform = platforms
+//
+//        // 添加乔涛属性
+//        project.extensions.create("super", SuperExtension, project.objects)
 
         variants.all { variant ->
             if (!variant.buildType.isDebuggable()) {
